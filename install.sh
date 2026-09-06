@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Installs the eighteen router agents into ~/.codex/agents and the router rules into ~/.codex/AGENTS.md.
+# Installs the twenty-two router agents into ~/.codex/agents and the router rules into ~/.codex/AGENTS.md.
 # Override models per tier: SCOUT_MODEL, BUILDER_MODEL, VERIFIER_MODEL, ARCHITECT_MODEL.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 mkdir -p "$CODEX_HOME/agents"; BAK="$CODEX_HOME/agents-backup/$(date +%Y%m%d%H%M%S)"; mkdir -p "$BAK"
-for a in scout researcher builder tester writer verifier architect auditor designer debugger analyst librarian coordinator promptsmith editor counsel operator monitor; do
+for a in scout researcher builder tester writer verifier architect auditor designer debugger analyst librarian coordinator promptsmith editor counsel operator monitor clerk runner digest quickfix; do
   [ -e "$CODEX_HOME/agents/$a.toml" ] && cp "$CODEX_HOME/agents/$a.toml" "$BAK/$a.toml"
   cp "$HERE/agents/$a.toml" "$CODEX_HOME/agents/$a.toml"
 done
@@ -16,7 +16,7 @@ set_model researcher "${RESEARCHER_MODEL:-}"; set_model writer "${WRITER_MODEL:-
 set_model tester "${TESTER_MODEL:-}"; set_model auditor "${AUDITOR_MODEL:-}"
 set_model designer "${DESIGNER_MODEL:-}"; set_model debugger "${DEBUGGER_MODEL:-}"
 set_model analyst "${ANALYST_MODEL:-}"; set_model librarian "${LIBRARIAN_MODEL:-}"
-for a in coordinator promptsmith editor counsel operator monitor; do v="$(echo $a | tr a-z A-Z)_MODEL"; set_model $a "${!v:-}"; done
+for a in coordinator promptsmith editor counsel operator monitor clerk runner digest quickfix; do v="$(echo $a | tr a-z A-Z)_MODEL"; set_model $a "${!v:-}"; done
 
 AG="$CODEX_HOME/AGENTS.md"
 if [ -f "$AG" ] && grep -q 'model-router:start' "$AG"; then
