@@ -66,6 +66,21 @@ Codex subagents are on by default (`agents.enabled`). If you turned them off, se
 
 If usage matters more than retries: scout `gpt-5.4-mini` low, builder and verifier `gpt-5.6-luna` medium, architect `gpt-5.6-sol` high, and in `AGENTS.md` use tiers scout 0–2, builder 3–5, architect 6–8 with escalation only after **two** failed verifications.
 
+## Cloud sandboxes (Claude Code web / mobile, Codex cloud)
+
+Cloud sessions run in a fresh sandbox and never see your machine's home folder. Put the router inside the repo instead, where it travels with the clone:
+
+```bash
+PROJECT_DIR=/path/to/your/repo ./install.sh
+cd /path/to/your/repo && git add -A && git commit -m "Add model-router" && git push
+```
+
+Or, inside any cloud session, install for that session only:
+
+```bash
+git clone https://github.com/NathalieChouLab/model-router-codex.git /tmp/mr && /tmp/mr/install.sh
+```
+
 ## Requirements
 
 Codex CLI with custom subagents (`~/.codex/agents/*.toml`). Verified on codex-cli 0.153.4.

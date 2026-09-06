@@ -3,7 +3,8 @@
 # Override models per tier: SCOUT_MODEL, BUILDER_MODEL, VERIFIER_MODEL, ARCHITECT_MODEL.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
+# PROJECT_DIR=/path/to/repo installs into that repo's .codex/agents and AGENTS.md (travels with the repo into Codex cloud).
+if [ -n "${PROJECT_DIR:-}" ]; then CODEX_HOME="$PROJECT_DIR/.codex"; else CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"; fi
 mkdir -p "$CODEX_HOME/agents"; BAK="$CODEX_HOME/agents-backup/$(date +%Y%m%d%H%M%S)"; mkdir -p "$BAK"
 for a in scout researcher builder tester writer verifier architect auditor designer debugger analyst librarian coordinator promptsmith editor counsel operator monitor clerk runner digest quickfix; do
   [ -e "$CODEX_HOME/agents/$a.toml" ] && cp "$CODEX_HOME/agents/$a.toml" "$BAK/$a.toml"
@@ -18,7 +19,7 @@ set_model designer "${DESIGNER_MODEL:-}"; set_model debugger "${DEBUGGER_MODEL:-
 set_model analyst "${ANALYST_MODEL:-}"; set_model librarian "${LIBRARIAN_MODEL:-}"
 for a in coordinator promptsmith editor counsel operator monitor clerk runner digest quickfix; do v="$(echo $a | tr a-z A-Z)_MODEL"; set_model $a "${!v:-}"; done
 
-AG="$CODEX_HOME/AGENTS.md"
+if [ -n "${PROJECT_DIR:-}" ]; then AG="$PROJECT_DIR/AGENTS.md"; else AG="$CODEX_HOME/AGENTS.md"; fi
 if [ -f "$AG" ] && grep -q 'model-router:start' "$AG"; then
   python3 - "$AG" "$HERE/AGENTS.md" <<'PY'
 import sys,re
