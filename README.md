@@ -1,6 +1,6 @@
 # model-router for Codex
 
-Eight custom Codex subagents plus a set of routing rules for `AGENTS.md`. Each **part** of a task goes to the agent whose model *and* reasoning effort fit it, and the tier is re-decided at every checkpoint while the task is running. Quality-first by default. Saves tokens by keeping the top model on decisions and everything else on the tier that can do it without a retry.
+Twelve custom Codex subagents plus a set of routing rules for `AGENTS.md`. Each **part** of a task goes to the agent whose model *and* reasoning effort fit it, and the tier is re-decided at every checkpoint while the task is running. Quality-first by default. Saves tokens by keeping the top model on decisions and everything else on the tier that can do it without a retry.
 
 This is the Codex port of [model-router for Claude Code](https://github.com/NathalieChouLab/model-router). Same rubric, same checkpoint rules, native Codex subagents.
 
@@ -16,13 +16,17 @@ This is the Codex port of [model-router for Claude Code](https://github.com/Nath
 | `verifier` | gpt-5.6-sol | high | read-only | adversarial review of someone else's change; `PASS`/`FAIL` with evidence |
 | `architect` | gpt-6-astra | xhigh | read-only | plans and decisions; anything with blast radius 2 (billing, auth, data, deploy) |
 | `auditor` | gpt-6-astra | max | read-only | final gate for blast radius 2: `SHIP` / `DO NOT SHIP`, with rollback check |
+| `designer` | gpt-5.6-sol | high | read-only | UI/visual review against a written standard; renders the page, returns a fix list |
+| `debugger` | gpt-5.6-sol | xhigh | workspace-write | reproduces, bisects, instruments to find a confirmed cause; hands off the fix |
+| `analyst` | gpt-5.6-sol | high | workspace-write | numbers computed by shown, re-runnable code; flags DECISION-GRADE figures |
+| `librarian` | gpt-5.6-luna | medium | read-only | large-context reader: digests long specs, transcripts, logs into a cited brief |
 
 Model names are whatever your `/model` picker lists. Swap them at install time with env vars or edit the `model =` line in each agent file afterwards.
 
 ## How it routes
 
 1. **Classify** on four axes, 0–2 each: ambiguity, blast radius, novelty, verification. Sum → scout (0–1), builder (2–4), architect (5–8). Blast radius 2 overrides everything and stops for human review.
-2. **Split** mixed tasks so each part runs at its own tier: architect plans, researcher confirms external facts, tester writes tests, builder implements, writer does the prose, scouts grep in parallel, verifier checks (never the author), auditor gates blast-radius-2 changes.
+2. **Split** mixed tasks so each part runs at its own tier: architect plans, researcher confirms external facts, librarian digests long inputs, tester writes tests, builder implements, debugger finds causes, writer does the prose, designer reviews UI, analyst produces numbers, scouts grep in parallel, verifier checks (never the author), auditor gates blast-radius-2 changes.
 3. **Delegate** with a self-contained brief: goal, constraints, files, definition of done, return shape.
 4. **Re-route at every checkpoint.** Plan approved → builder. Unknown cause found → architect. Builder fails verification → raise effort, then model. Retry passed → next part drops back to its natural tier. Every switch is logged: `Re-route: builder → architect (cause unknown)`.
 5. **Skip routing** for trivial one-step tasks.
@@ -37,7 +41,7 @@ cd model-router-codex && ./install.sh
 codex doctor
 ```
 
-The installer copies the eight agents to `~/.codex/agents/` (backing up existing files) and appends the router rules to `~/.codex/AGENTS.md` between `model-router:start/end` markers, so re-running it updates in place.
+The installer copies the twelve agents to `~/.codex/agents/` (backing up existing files) and appends the router rules to `~/.codex/AGENTS.md` between `model-router:start/end` markers, so re-running it updates in place.
 
 Different models available? Pin them at install time:
 

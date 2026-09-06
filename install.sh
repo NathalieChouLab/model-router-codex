@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Installs the four router agents into ~/.codex/agents and the router rules into ~/.codex/AGENTS.md.
+# Installs the twelve router agents into ~/.codex/agents and the router rules into ~/.codex/AGENTS.md.
 # Override models per tier: SCOUT_MODEL, BUILDER_MODEL, VERIFIER_MODEL, ARCHITECT_MODEL.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 mkdir -p "$CODEX_HOME/agents"; BAK="$CODEX_HOME/agents-backup/$(date +%Y%m%d%H%M%S)"; mkdir -p "$BAK"
-for a in scout researcher builder tester writer verifier architect auditor; do
+for a in scout researcher builder tester writer verifier architect auditor designer debugger analyst librarian; do
   [ -e "$CODEX_HOME/agents/$a.toml" ] && cp "$CODEX_HOME/agents/$a.toml" "$BAK/$a.toml"
   cp "$HERE/agents/$a.toml" "$CODEX_HOME/agents/$a.toml"
 done
@@ -14,6 +14,8 @@ set_model scout "${SCOUT_MODEL:-}"; set_model builder "${BUILDER_MODEL:-}"
 set_model verifier "${VERIFIER_MODEL:-}"; set_model architect "${ARCHITECT_MODEL:-}"
 set_model researcher "${RESEARCHER_MODEL:-}"; set_model writer "${WRITER_MODEL:-}"
 set_model tester "${TESTER_MODEL:-}"; set_model auditor "${AUDITOR_MODEL:-}"
+set_model designer "${DESIGNER_MODEL:-}"; set_model debugger "${DEBUGGER_MODEL:-}"
+set_model analyst "${ANALYST_MODEL:-}"; set_model librarian "${LIBRARIAN_MODEL:-}"
 
 AG="$CODEX_HOME/AGENTS.md"
 if [ -f "$AG" ] && grep -q 'model-router:start' "$AG"; then
