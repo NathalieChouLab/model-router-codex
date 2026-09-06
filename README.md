@@ -1,6 +1,6 @@
 # model-router for Codex
 
-Twelve custom Codex subagents plus a set of routing rules for `AGENTS.md`. Each **part** of a task goes to the agent whose model *and* reasoning effort fit it, and the tier is re-decided at every checkpoint while the task is running. Quality-first by default. Saves tokens by keeping the top model on decisions and everything else on the tier that can do it without a retry.
+Eighteen custom Codex subagents plus a set of routing rules for `AGENTS.md`. Each **part** of a task goes to the agent whose model *and* reasoning effort fit it, and the tier is re-decided at every checkpoint while the task is running. Quality-first by default. Saves tokens by keeping the top model on decisions and everything else on the tier that can do it without a retry.
 
 This is the Codex port of [model-router for Claude Code](https://github.com/NathalieChouLab/model-router). Same rubric, same checkpoint rules, native Codex subagents.
 
@@ -20,6 +20,12 @@ This is the Codex port of [model-router for Claude Code](https://github.com/Nath
 | `debugger` | gpt-5.6-sol | xhigh | workspace-write | reproduces, bisects, instruments to find a confirmed cause; hands off the fix |
 | `analyst` | gpt-5.6-sol | high | workspace-write | numbers computed by shown, re-runnable code; flags DECISION-GRADE figures |
 | `librarian` | gpt-5.6-luna | medium | read-only | large-context reader: digests long specs, transcripts, logs into a cited brief |
+| `coordinator` | gpt-5.6-sol | high | read-only | turns a multi-task request into an ordered queue with tiers, dependencies, done-criteria |
+| `promptsmith` | gpt-6-astra | xhigh | read-only | writes briefs, specs, system prompts, and agent files other agents will execute |
+| `editor` | gpt-5.6-sol | medium | read-only | prose review against a voice guide or standard; never the writer |
+| `counsel` | gpt-6-astra | xhigh | read-only | legal/regulatory analysis: jurisdiction, primary sources, what a professional must confirm |
+| `operator` | gpt-5.6-sol | high | workspace-write | system administration and ops: read-only diagnosis first, minimal change, every command reported |
+| `monitor` | gpt-5.6-luna | low | read-only | log/health/status checks; reports only what changed or looks wrong |
 
 Model names are whatever your `/model` picker lists. Swap them at install time with env vars or edit the `model =` line in each agent file afterwards.
 
@@ -41,7 +47,7 @@ cd model-router-codex && ./install.sh
 codex doctor
 ```
 
-The installer copies the twelve agents to `~/.codex/agents/` (backing up existing files) and appends the router rules to `~/.codex/AGENTS.md` between `model-router:start/end` markers, so re-running it updates in place.
+The installer copies the eighteen agents to `~/.codex/agents/` (backing up existing files) and appends the router rules to `~/.codex/AGENTS.md` between `model-router:start/end` markers, so re-running it updates in place.
 
 Different models available? Pin them at install time:
 
