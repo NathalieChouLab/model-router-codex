@@ -2,7 +2,7 @@
 
 Twenty-two custom Codex subagents plus a set of routing rules for `AGENTS.md`. Each **part** of a task goes to the agent whose model *and* reasoning effort fit it, and the tier is re-decided at every checkpoint while the task is running. Quality-first by default. Saves tokens by keeping the top model on decisions and everything else on the tier that can do it without a retry.
 
-This is the Codex port of [model-router for Claude Code](https://github.com/NathalieChouLab/model-router). Same rubric, same checkpoint rules, native Codex subagents.
+This is the Codex port of [model-router for Claude Code](https://github.com/NathalieChouLab/model-router-claude). Same rubric, same checkpoint rules, native Codex subagents.
 
 ## Tiers
 
