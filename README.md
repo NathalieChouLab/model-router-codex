@@ -81,6 +81,10 @@ Or, inside any cloud session, install for that session only:
 git clone https://github.com/NathalieChouLab/model-router-codex.git /tmp/mr && /tmp/mr/install.sh
 ```
 
+## Codex cloud
+
+Cloud tasks run in a sandbox that never sees your machine's `~/.codex`. Paste `cloud/setup-script.sh` into the environment's **Setup script** in Codex settings (Environments). It installs the twenty-two agents and the router rules into the sandbox's `~/.codex` from this repo, no commits to your project needed.
+
 ## Requirements
 
 Codex CLI with custom subagents (`~/.codex/agents/*.toml`). Verified on codex-cli 0.153.4.
