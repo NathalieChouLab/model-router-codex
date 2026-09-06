@@ -4,9 +4,9 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
-mkdir -p "$CODEX_HOME/agents"
+mkdir -p "$CODEX_HOME/agents"; BAK="$CODEX_HOME/agents-backup/$(date +%Y%m%d%H%M%S)"; mkdir -p "$BAK"
 for a in scout researcher builder tester writer verifier architect auditor; do
-  [ -e "$CODEX_HOME/agents/$a.toml" ] && cp "$CODEX_HOME/agents/$a.toml" "$CODEX_HOME/agents/$a.toml.bak"
+  [ -e "$CODEX_HOME/agents/$a.toml" ] && cp "$CODEX_HOME/agents/$a.toml" "$BAK/$a.toml"
   cp "$HERE/agents/$a.toml" "$CODEX_HOME/agents/$a.toml"
 done
 set_model(){ [ -n "${2:-}" ] && sed -i.tmp "s/^model = .*/model = \"$2\"/" "$CODEX_HOME/agents/$1.toml" && rm -f "$CODEX_HOME/agents/$1.toml.tmp"; true; }
