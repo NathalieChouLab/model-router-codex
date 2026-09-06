@@ -1,6 +1,6 @@
 # model-router for Codex
 
-Eighteen custom Codex subagents plus a set of routing rules for `AGENTS.md`. Each **part** of a task goes to the agent whose model *and* reasoning effort fit it, and the tier is re-decided at every checkpoint while the task is running. Quality-first by default. Saves tokens by keeping the top model on decisions and everything else on the tier that can do it without a retry.
+Twenty-two custom Codex subagents plus a set of routing rules for `AGENTS.md`. Each **part** of a task goes to the agent whose model *and* reasoning effort fit it, and the tier is re-decided at every checkpoint while the task is running. Quality-first by default. Saves tokens by keeping the top model on decisions and everything else on the tier that can do it without a retry.
 
 This is the Codex port of [model-router for Claude Code](https://github.com/NathalieChouLab/model-router). Same rubric, same checkpoint rules, native Codex subagents.
 
@@ -26,6 +26,10 @@ This is the Codex port of [model-router for Claude Code](https://github.com/Nath
 | `counsel` | gpt-6-astra | xhigh | read-only | legal/regulatory analysis: jurisdiction, primary sources, what a professional must confirm |
 | `operator` | gpt-5.6-sol | high | workspace-write | system administration and ops: read-only diagnosis first, minimal change, every command reported |
 | `monitor` | gpt-5.6-luna | low | read-only | log/health/status checks; reports only what changed or looks wrong |
+| `clerk` | gpt-5.4-mini | low | workspace-write | mechanical edits: renames, bulk replace, formatting, applying a given diff; stops on any decision |
+| `runner` | gpt-5.4-mini | low | read-only | runs the named command or test suite, reports pass/fail and failing lines only |
+| `digest` | gpt-5.4-mini | low | read-only | ten-line summary of one file, diff, or thread; promotes to librarian when it matters |
+| `quickfix` | gpt-5.6-luna | low | workspace-write | one-file fix with a known cause and an existing check; one attempt, then builder |
 
 Model names are whatever your `/model` picker lists. Swap them at install time with env vars or edit the `model =` line in each agent file afterwards.
 
@@ -47,7 +51,7 @@ cd model-router-codex && ./install.sh
 codex doctor
 ```
 
-The installer copies the eighteen agents to `~/.codex/agents/` (backing up existing files) and appends the router rules to `~/.codex/AGENTS.md` between `model-router:start/end` markers, so re-running it updates in place.
+The installer copies the twenty-two agents to `~/.codex/agents/` (backing up existing files) and appends the router rules to `~/.codex/AGENTS.md` between `model-router:start/end` markers, so re-running it updates in place.
 
 Different models available? Pin them at install time:
 
